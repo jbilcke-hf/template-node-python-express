@@ -8,7 +8,8 @@ pinned: false
 app_port: 7860
 ---
 
-A minimalist Docker Space to help people getting started with Node, Python, Express and TypeScript.
+A minimalist Docker space to help people getting started with Node, Python, Express and TypeScript.
+Ready to be used in a Hugging Face Space.
 
 You read it right: this template project will help you call Python libraries from NodeJS!
 
