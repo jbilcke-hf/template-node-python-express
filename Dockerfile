@@ -1,35 +1,32 @@
-# pick your favorite Python + Node bundle from here:
-# https://hub.docker.com/r/nikolaik/python-nodejs
-FROM nikolaik/python-nodejs:python3.11-nodejs18
+FROM python:latest
 
-WORKDIR /code
+ENV PYTHONUNBUFFERED 1
 
-COPY ./requirements.txt /code/requirements.txt
+EXPOSE 7860
 
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+RUN apt update
 
-# Set up a new user named "user" with user ID 1000
-RUN useradd -o -u 1000 user
+RUN apt install curl
 
-# Switch to the "user" user
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+
+RUN apt install nodejs
+
+RUN useradd -m -u 1000 user
 USER user
-
-# Set home to the user's home directory
 ENV HOME=/home/user \
 	PATH=/home/user/.local/bin:$PATH
 
-# Set the working directory to the user's home directory
 WORKDIR $HOME/app
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-COPY --chown=user package*.json $HOME/app
+COPY --chown=user package*.json .
 
 RUN npm install
 
-# Copy the current directory contents into the container at $HOME/app setting the owner to the user
-COPY --chown=user . $HOME/app
+COPY requirements.txt ./
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt
 
-EXPOSE 7860
+COPY --chown=user . .
+
 CMD [ "npm", "run", "start" ]
