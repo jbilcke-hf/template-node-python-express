@@ -2,6 +2,12 @@
 # https://hub.docker.com/r/nikolaik/python-nodejs
 FROM nikolaik/python-nodejs:python3.11-nodejs18
 
+WORKDIR /code
+
+COPY ./requirements.txt /code/requirements.txt
+
+RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+
 # Set up a new user named "user" with user ID 1000
 RUN useradd -o -u 1000 user
 
@@ -21,9 +27,6 @@ WORKDIR $HOME/app
 COPY --chown=user package*.json $HOME/app
 
 RUN npm install
-
-COPY requirements.txt requirements.txt
-# RUN pip install -r requirements.txt
 
 # Copy the current directory contents into the container at $HOME/app setting the owner to the user
 COPY --chown=user . $HOME/app
