@@ -22,4 +22,15 @@ app.get('/', async (req, res) => {
 </html>`)
   res.end()
 })
+
+process.on('SIGINT', () => {
+  try {
+    (python as any).exit()
+  } catch (err) {
+    // exiting Pythonia can get a bit messy: try/catch or not,
+    // you *will* see warnings and tracebacks in the console
+  }
+  process.exit(0)
+})
+
 app.listen(port, () => { console.log(`Open http://localhost:${port}`) })
